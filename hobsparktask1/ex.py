@@ -16,7 +16,7 @@ def complete(item):
   v, old_d, new_d = item[0], item[1][0], item[1][1]
   return (v, old_d if old_d is not None else new_d)
 
-n = 400  # number of partitions
+n = 20  # number of partitions
 edges = sc.textFile("/data/twitter/twitter_sample.txt").map(parse_edge)
 forward_edges = edges.map(lambda e: (e[1], e[0])).partitionBy(n).persist()
 
@@ -41,6 +41,6 @@ while True:
   else:
     break
 
-path = sorted(new_distances.filter(lambda i: i[0] == 34).collect())[0][1][1] + [34]
+path = new_distances.filter(lambda i: i[0] == 34).take(1)[0][1][1] + [34]
 
 print(",".join(map(str, path)))
