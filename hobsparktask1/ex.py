@@ -16,7 +16,7 @@ def complete(item):
   v, old_d, new_d = item[0], item[1][0], item[1][1]
   return (v, old_d if old_d is not None else new_d)
 
-n = 400  # number of partitions
+n = 1  # number of partitions
 edges = sc.textFile("/data/twitter/twitter_sample.txt").map(parse_edge)
 forward_edges = edges.map(lambda e: (e[1], e[0])).partitionBy(n).persist()
 
@@ -26,11 +26,18 @@ distances = sc.parallelize([(x, (d, []))]).partitionBy(n)
 
 while True:
   candidates = distances.join(forward_edges, n).map(step)
+  #print(candidates.collect())
+  keys = distances.keys().collect()
+  #print(keys)
+  #print(forward_edges.collect())
+  forward_edges = forward_edges.filter(lambda i: i[0] not in keys and i[1] not in keys)
   new_distances = distances.fullOuterJoin(candidates, n).map(complete, True).persist()
   count = new_distances.filter(lambda i: i[0] == 34).count()
   if count == 0:
+    distances = new_distances.filter(lambda i: i[1][0] > d - 1)
+    #print(distances.collect())
+    #print(map(lambda x: x[1][0] - d - 1, distances.collect()))
     d += 1
-    distances = new_distances
   else:
     break
 
