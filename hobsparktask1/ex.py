@@ -2,7 +2,7 @@ from pyspark import SparkContext, SparkConf
 
 config = SparkConf().setAppName("my_super_app").setMaster("local[3]") 
 sc = SparkContext(conf=config)
-sc.setLogLevel("ERROR")
+#sc.setLogLevel("ERROR")
 
 def parse_edge(s):
   user, follower = s.split("\t")
