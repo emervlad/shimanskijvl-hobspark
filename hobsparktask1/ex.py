@@ -1,6 +1,6 @@
 from pyspark import SparkContext, SparkConf
 
-config = SparkConf().setAppName("my_super_app").setMaster("local[3]") 
+config = SparkConf().setAppName("my_super_app").setMaster("yarn") 
 sc = SparkContext(conf=config)
 #sc.setLogLevel("ERROR")
 
