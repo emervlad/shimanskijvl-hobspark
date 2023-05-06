@@ -46,7 +46,7 @@ required_words = bigrams_count.select(split(bigrams_count["bigram"], ' ').alias(
 
 df2 = required_words.join(words_count, (required_words["s1"] == words_count["s"])).select(col('s1'), col('s2'), col('count1').alias('column_bi'), col('count').alias('count1'))
 
-df3 = df2.join(words_count, ((df2["s2"] == words_count["s"]))).select(concat_ws('_', col('s1'), col('s2')).alias('con'), (-log(col('column_bi') * sum_all_words**2 / (col('count1') * col('count') * sum_all_pairs)) / log(col('column_bi') / sum_all_pairs)).alias('npmi')).orderBy("npmi", ascending=False)
+df3 = df2.join(words_count, ((df2["s2"] == words_count["s"]))).select(concat_ws('_', col('s1'), col('s2')).alias('con'), (-log(col('column_bi') * sum_all_words**2 / (col('count1') * col('count') * sum_all_pairs)) / log(col('column_bi') / sum_all_pairs)).alias('npmi')).orderBy("npmi", ascending=False).limit(39)
 
 for pair in [str(row['con']) for row in df3.collect()]:
     print(pair)
