@@ -33,7 +33,7 @@ while True:
   count = candidates.where("vertex == 34").count()
   if count == 0:
     keys = list(set([str(row['vertex']) for row in distances.collect()]))
-    forward_edges = forward_edges.join(~forward_edges["user"].isin(keys) & ~forward_edges["follower"].isin(keys))
+    forward_edges = forward_edges.filter(~forward_edges["user"].isin(keys) & ~forward_edges["follower"].isin(keys))
     distances = candidates.filter("distance > " + str(d-1))
     d += 1
   else:
